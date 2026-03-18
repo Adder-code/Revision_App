@@ -456,12 +456,16 @@ def render_metrics() -> None:
 
 def render_storage_status() -> None:
     summary = db.progress_summary()
+    storage_label = "Supabase Postgres" if db._database_url() else "Local SQLite"
     with st.sidebar:
         st.divider()
         st.subheader("Storage")
-        st.caption("The app auto-loads from the local SQLite database on startup.")
+        st.caption(f"The app auto-loads from `{storage_label}` on startup.")
         st.caption(f"Current person: `{db.get_current_person()}`")
-        st.caption(f"Database: `revision_app.db`")
+        if db._database_url():
+            st.caption("Database: hosted and persistent")
+        else:
+            st.caption("Database: `revision_app.db`")
         st.caption(
             f"{summary['subtopic_count']} subtopics · {summary['active_tasks']} active sessions · {summary['completed_tasks']} completed sessions"
         )
